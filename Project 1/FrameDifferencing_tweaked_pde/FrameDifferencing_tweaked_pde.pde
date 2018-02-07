@@ -69,5 +69,5 @@ void draw() {
     }
   }
   //save frames to use in Movie Maker later
-  saveFrame("frames/####.tif");
+  saveFrame("C:/Users/maddi/Videos/git_440/frames/####.tif");
 }
