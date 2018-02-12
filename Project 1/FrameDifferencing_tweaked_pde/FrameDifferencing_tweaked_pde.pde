@@ -61,13 +61,19 @@ void draw() {
       // Save the current color into the 'previous' buffer
       previousFrame[i] = currColor;
     }
+    if (movementSum > 6000000) {
+      int diffR = 255;
+      int diffG = 255;
+      int diffB = 255;
+    }
     // To prevent flicker from frames that are all black (no movement),
     // only update the screen if the image has changed.
     if (movementSum > 0) {
       updatePixels();
       println(movementSum); // Print the total amount of movement to the console
     }
+    
   }
-  //save frames to use in Movie Maker later
+  //save frames to use in Movie Maker, to be compiled later
   saveFrame("C:/Users/maddi/Videos/git_440/frames/####.tif");
 }
