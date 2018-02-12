@@ -54,18 +54,18 @@ void draw() {
       int diffB = abs(currB - prevB);
       // Add these differences to the running tally
       movementSum += diffR + diffG + diffB;
-      // Render the difference image to the screen
-      pixels[i] = color(diffR, diffG, diffB);
+        if (movementSum > 4000000) {
+          pixels[i] = color(255,0,255);
+        } else {
+        // Render the difference image to the screen
+          pixels[i] = color(diffR, diffG, diffB);
+        }
       // The following line is much faster, but more confusing to read
       //pixels[i] = 0xff000000 | (diffR << 16) | (diffG << 8) | diffB;
       // Save the current color into the 'previous' buffer
       previousFrame[i] = currColor;
     }
-    if (movementSum > 6000000) {
-      int diffR = 255;
-      int diffG = 255;
-      int diffB = 255;
-    }
+    
     // To prevent flicker from frames that are all black (no movement),
     // only update the screen if the image has changed.
     if (movementSum > 0) {
