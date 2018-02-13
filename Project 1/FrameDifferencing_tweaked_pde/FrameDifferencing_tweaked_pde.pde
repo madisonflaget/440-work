@@ -8,10 +8,13 @@
 
 
 import processing.video.*;
+import processing.sound.*;
 
 int numPixels;
 int[] previousFrame;
 Capture video;
+// introduce variable for brown noise
+BrownNoise noise;
 
 void setup() {
   size(640, 480);
@@ -27,6 +30,10 @@ void setup() {
   // Create an array to store the previously captured frame
   previousFrame = new int[numPixels];
   loadPixels();
+  
+  //generate the brown noise
+  noise = new BrownNoise(this);
+  noise.play();
 }
 
 void draw() {
