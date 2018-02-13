@@ -13,8 +13,8 @@ import processing.sound.*;
 int numPixels;
 int[] previousFrame;
 Capture video;
-// introduce variable for brown noise
-BrownNoise noise;
+// introduce variable for pink noise
+PinkNoise noise;
 
 void setup() {
   size(640, 480);
@@ -32,7 +32,7 @@ void setup() {
   loadPixels();
   
   //generate the brown noise
-  noise = new BrownNoise(this);
+  noise = new PinkNoise(this);
   noise.play();
 }
 
@@ -81,8 +81,11 @@ void draw() {
       updatePixels();
       println(movementSum); // Print the total amount of movement to the console
     }
-    
+  
+  // set the pink noise amplitude to increase with movementSum
+  noise.amp(map(movementSum, 0, 30000000, 0.0, 1.0)); 
   }
+  
   //save frames to use in Movie Maker, to be compiled later
   saveFrame("C:/Users/maddi/Videos/git_440/frames/####.tif");
 }
