@@ -6,7 +6,6 @@
  * Quantify the amount of movement in the video frame using frame-differencing.
  */ 
 
-
 import processing.video.*;
 import processing.sound.*;
 
@@ -31,7 +30,7 @@ void setup() {
   previousFrame = new int[numPixels];
   loadPixels();
   
-  //generate the brown noise
+  //generate pink noise
   noise = new PinkNoise(this);
   noise.play();
 }
