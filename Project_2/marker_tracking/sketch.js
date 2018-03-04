@@ -7,7 +7,7 @@ var w = 640,
 var raster, param, pmat, resultMat, detector;
 
 function setup() {
-    pixelDensity(1); // this makes the internal p5 canvas smaller 
+    pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
     createCanvas(w, h);
     capture.size(w, h);
@@ -25,7 +25,7 @@ function setup() {
 function draw() {
     image(capture, 0, 0, w, h);
     canvas.changed = true;
-    var thresholdAmount = 128; //select('#thresholdAmount').value() * 255 / 100;
+    var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
     select('#markersDetected').elt.innerText = detected;
     for (var i = 0; i < detected; i++) {
