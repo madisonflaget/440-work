@@ -1,5 +1,6 @@
-// more here:
-// http://fhtr.org/JSARToolKit/demos/tests/test2.html
+// adapted from code by Kyle McDonald
+// https://kylemcdonald.github.io/cv-examples/
+
 var capture;
 var w = 640,
     h = 480;
@@ -32,8 +33,9 @@ function draw() {
         // read data from the marker
         // var id = detector.getIdMarkerData(i);
 
+        //*** commented out this line to get rid of the annoying flashing ***
         // get the transformation for this marker
-        detector.getTransformMatrix(i, resultMat);
+        // detector.getTransformMatrix(i, resultMat);
 
         // convert the transformation to account for our camera
         var mat = resultMat;
