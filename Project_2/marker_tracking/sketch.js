@@ -29,6 +29,10 @@ function draw() {
     var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
     select('#markersDetected').elt.innerText = detected;
+
+    //added a background so that there is a blank canvas to draw on ;)
+    background('black');
+
     for (var i = 0; i < detected; i++) {
         // read data from the marker
         // var id = detector.getIdMarkerData(i);
