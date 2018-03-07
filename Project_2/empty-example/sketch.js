@@ -1,20 +1,17 @@
 var img;
 var move = 0;
-var imgX = 0;
-var imgY = 0;
+var imgX = 500;
+var imgY = 400;
 
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
 }
 
 function setup() {
-    imgX = windowWidth-220;
-
     createCanvas(windowWidth-20,windowHeight-20);
-    background(0);
     image(img, imgX, imgY);
 }
 
 function draw() {
-    imgX = imgX - 1;
+    // imgX =- 1;
 }
