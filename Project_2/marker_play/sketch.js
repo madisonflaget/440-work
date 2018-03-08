@@ -12,9 +12,12 @@ function setup() {
 
     createCanvas(windowWidth-20,windowHeight-20);
     background(0);
-    image(img, imgX, imgY);
+
 }
 
 function draw() {
+    background('black')
+    image(img, imgX, imgY);
+
     imgX = imgX - 1;
 }

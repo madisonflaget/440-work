@@ -4,10 +4,25 @@
 var capture;
 var w = 640,
     h = 480;
-
 var raster, param, pmat, resultMat, detector;
 
+// variables to move the marker image around
+var img;
+var move = 0;
+var imgX = 0;
+var imgY = 0;
+
+//create memory variable to keep track of how long a marker is obscurred
+var memory = false;
+
+function preload()  {
+    img = loadImage('assets/mark_smaller.png');
+}
+
 function setup() {
+    //load maker image into canvas
+    imgX = windowWidth-220;
+
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
     createCanvas(w, h);
@@ -29,9 +44,12 @@ function draw() {
     var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
     select('#markersDetected').elt.innerText = detected;
+    // new ID score to keep track of how many times a variable is obscurred
+    select('#score').elt.innerText = memory;
 
-    //added a background so that there is a blank canvas to draw on ;)
+    //added a background so that there is a blank canvas to draw on. Then image is drawn
     background('black');
+    image(img, imgX, imgY);
 
     for (var i = 0; i < detected; i++) {
         // read data from the marker
@@ -77,4 +95,7 @@ function draw() {
         });
         endShape();
     }
+
+    // update the position of the moving marker image
+    imgX = imgX - 1;
 }
