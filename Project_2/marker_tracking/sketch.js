@@ -9,12 +9,13 @@ var raster, param, pmat, resultMat, detector;
 // variables to move the marker image around
 var img;
 var move = 0;
-var imgX = 0;
-var imgY = 0;
+let markers = [];
 
-//create memory variable to keep track of how long a marker is obscurred
-var memory = false;
+//create memory variable to keep track of how long a marker is obscurred. Create a starting number of lives from which memory will subtract later
+var memory = 0;
+var lives = 3;
 
+// preload image so it displays faster
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
 }
@@ -22,6 +23,7 @@ function preload()  {
 function setup() {
     //load maker image into canvas
     imgX = windowWidth-220;
+    markers.push( new Marker(img, imgX, 0) );
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
@@ -44,18 +46,27 @@ function draw() {
     var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
     select('#markersDetected').elt.innerText = detected;
-    // new ID score to keep track of how many times a variable is obscurred
-    select('#score').elt.innerText = memory;
+    // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
+    select('#lives').elt.innerText = lives;
 
-    //added a background so that there is a blank canvas to draw on. Then image is drawn
-    background('black');
-    image(img, imgX, imgY);
+    //added a background so that there is a blank canvas to draw on. Then marker image is drawn
+    // background('black');
+
+    // draw and update markers
+    for( let i = markers.length-1; i >= 0; i-- ){
+        markers[i].display();
+        markers[i].move();
+        if( markers[i].destroy() ){
+            markers.splice(i, 1);
+            markers.push( new Marker(img, imgX, 0) );
+        }
+    }
 
     for (var i = 0; i < detected; i++) {
         // read data from the marker
         // var id = detector.getIdMarkerData(i);
 
-        //*** commented out this line to get rid of the annoying flashing ***
+        // *** commented out this line to get rid of the annoying flashing ***
         // get the transformation for this marker
         // detector.getTransformMatrix(i, resultMat);
 
@@ -75,7 +86,7 @@ function draw() {
             vec4.create(q, -q, 0, 1),
             vec4.create(q, q, 0, 1),
             vec4.create(-q, q, 0, 1),
-//            vec4.create(0, 0, -2*q, 1) // poke up
+        //vec4.create(0, 0, -2*q, 1) // poke up
         ];
 
         // convert that set of vertices from object space to screen space
@@ -96,6 +107,15 @@ function draw() {
         endShape();
     }
 
-    // update the position of the moving marker image
-    imgX = imgX - 1;
+    // subtract from 'lives' if fewer than the number of existing markers is visible
+    if (detected >= markers.length) {
+        memory = 0;
+    } else {
+        memory++
+        if (memory > 15){
+            memory = 0;
+            lives--;
+        }
+    }
+
 }
