@@ -27,8 +27,8 @@ function setup() {
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
-    createCanvas(w, h);
-    capture.size(w, h);
+    createCanvas(windowWidth - 30, windowHeight);
+    capture.size(windowWidth - 30, windowHeight);
     capture.hide();
 
     raster = new NyARRgbRaster_Canvas2D(canvas);
@@ -41,7 +41,7 @@ function setup() {
 }
 
 function draw() {
-    image(capture, 0, 0, w, h);
+    image(capture, 0, 0, windowWidth - 30, windowHeight);
     canvas.changed = true;
     var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
@@ -117,5 +117,12 @@ function draw() {
             lives--;
         }
     }
+}
 
+// if mouse is pressed in upper left portion of the canvas, then the sketch enters fullscreen mode
+function mousePressed() {
+  if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
+    var fs = fullscreen();
+    fullscreen(!fs);
+  }
 }
