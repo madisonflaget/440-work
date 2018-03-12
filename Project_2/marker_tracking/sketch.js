@@ -22,9 +22,12 @@ function preload()  {
 }
 
 function setup() {
-    //load maker image into canvas
+    //load marker image into canvas
     imgX = windowWidth-220;
     markers.push( new Marker(img, imgX, imgY ));
+
+    //load bg image
+    bg = loadImage("assets/mario_bg.png");
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
@@ -52,6 +55,9 @@ function draw() {
 
     // added a background so that there is a blank canvas to draw on. Then marker image is drawn
     background('white');
+    background(bg);
+
+    // print title into canvas
     textSize(32);
     textAlign(CENTER);
     text('Live Mario', 0, 0);
