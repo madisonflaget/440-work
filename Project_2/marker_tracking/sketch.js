@@ -10,10 +10,11 @@ var raster, param, pmat, resultMat, detector;
 var img;
 var move = 0;
 let markers = [];
+var imgY = 0;
 
 //create memory variable to keep track of how long a marker is obscurred. Create a starting number of lives from which memory will subtract later
 var memory = 0;
-var lives = 3;
+var lives = 5;
 
 // preload image so it displays faster
 function preload()  {
@@ -23,7 +24,7 @@ function preload()  {
 function setup() {
     //load maker image into canvas
     imgX = windowWidth-220;
-    markers.push( new Marker(img, imgX, 0) );
+    markers.push( new Marker(img, imgX, imgY ));
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
@@ -49,16 +50,22 @@ function draw() {
     // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
     select('#lives').elt.innerText = lives;
 
-    //added a background so that there is a blank canvas to draw on. Then marker image is drawn
-    // background('black');
+    // added a background so that there is a blank canvas to draw on. Then marker image is drawn
+    background('white');
+    textSize(32);
+    textAlign(CENTER);
+    text('Live Mario', 0, 0);
+    fill(0);
 
+    //each frame, generate a random number in a range to be used for the y location of the image
+    imgY = random(0, 400);
     // draw and update markers
     for( let i = markers.length-1; i >= 0; i-- ){
         markers[i].display();
         markers[i].move();
         if( markers[i].destroy() ){
             markers.splice(i, 1);
-            markers.push( new Marker(img, imgX, 0) );
+            markers.push( new Marker(img, imgX, imgY ));
         }
     }
 
@@ -107,7 +114,8 @@ function draw() {
         endShape();
     }
 
-    // subtract from 'lives' if fewer than the number of existing markers is visible
+    // if all existing markers are visble, reset memory to 0 (to clear anomalies)
+    // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
     if (detected >= markers.length) {
         memory = 0;
     } else {
@@ -115,6 +123,8 @@ function draw() {
         if (memory > 15){
             memory = 0;
             lives--;
+            markers.splice(i, 1);
+            markers.push( new Marker(img, imgX, imgY));
         }
     }
 }

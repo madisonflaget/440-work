@@ -3,7 +3,7 @@ class Marker {
         this.imgRef = img;
         this.posX = x;
         this.posY = y;
-        this.deltaX = -1;
+        this.deltaX = -4;
         this.deltaY = 0;
     }
 
