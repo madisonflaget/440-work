@@ -16,18 +16,25 @@ var imgY = 0;
 var memory = 0;
 var lives = 5;
 
-// preload image so it displays faster
+// preload marker image and sounds so they displays faster
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
+    soundFormats('mp3');
+    music = loadSound('assets/mario_music.mp3');
 }
 
 function setup() {
+    //load bg image
+    bg = loadImage("assets/mario_bg.png");
+
+    // set volume, specify that I want it to loop, then start playing music
+    music.setVolume(1.0);
+    music.play();
+    // music.loop();
+
     //load marker image into canvas
     imgX = windowWidth-220;
     markers.push( new Marker(img, imgX, imgY ));
-
-    //load bg image
-    bg = loadImage("assets/mario_bg.png");
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
