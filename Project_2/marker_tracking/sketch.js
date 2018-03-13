@@ -34,13 +34,13 @@ function setup() {
     // music.loop();
 
     //load marker image into canvas
-    imgX = windowWidth-220;
+    imgX = windowWidth - 220;
     markers.push( new Marker(img, imgX, imgY ));
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
-    createCanvas(windowWidth - 30, windowHeight);
-    capture.size(windowWidth - 30, windowHeight);
+    createCanvas(windowWidth - 30, windowHeight - 130);
+    capture.size(windowWidth - 30, windowHeight - 130);
     capture.hide();
 
     raster = new NyARRgbRaster_Canvas2D(canvas);
@@ -53,7 +53,7 @@ function setup() {
 }
 
 function draw() {
-    image(capture, 0, 0, windowWidth - 30, windowHeight);
+    image(capture, 0, 0, windowWidth - 30, windowHeight - 130);
     canvas.changed = true;
     var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
     detected = detector.detectMarkerLite(raster, thresholdAmount);
@@ -62,7 +62,6 @@ function draw() {
     select('#lives').elt.innerText = lives;
 
     // added a background so that there is a blank canvas to draw on. Then marker image is drawn
-    background('white');
     background(bg);
 
     // print title into canvas
@@ -134,7 +133,7 @@ function draw() {
         memory = 0;
     } else {
         memory++
-        if (memory > 15){
+        if (memory > 30){
             memory = 0;
             lives--;
             markers.splice(i, 1);
@@ -143,7 +142,6 @@ function draw() {
     }
     // if I lose all my lives, then I get a Game Over screen and the music stops
     if (lives <= 0) {
-        background('white');
         background(game_over);
         music.stop();
     }
