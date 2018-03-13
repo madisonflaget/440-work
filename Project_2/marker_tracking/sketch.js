@@ -26,6 +26,7 @@ function preload()  {
 function setup() {
     //load bg image
     bg = loadImage("assets/mario_bg.png");
+    game_over = loadImage("assets/game_over.jpg");
 
     // set volume, specify that I want it to loop, then start playing music
     music.setVolume(1.0);
@@ -139,6 +140,12 @@ function draw() {
             markers.splice(i, 1);
             markers.push( new Marker(img, imgX, imgY));
         }
+    }
+    // if I lose all my lives, then I get a Game Over screen and the music stops
+    if (lives <= 0) {
+        background('white');
+        background(game_over);
+        music.stop();
     }
 }
 
