@@ -84,7 +84,7 @@ function draw() {
 
     for (var i = 0; i < detected; i++) {
         // read data from the marker
-        // var id = detector.getIdMarkerData(i);
+        //var id = detector.getIdMarkerData(i);
 
         // *** commented out this line to get rid of the annoying flashing ***
         // get the transformation for this marker
