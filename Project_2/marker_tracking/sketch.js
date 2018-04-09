@@ -142,11 +142,11 @@ function draw() {
         if (memory > 30){
             memory = 0;
             lives--;
-            music.pause();
+            music.stop();
             lose_life.setVolume(1.0);
             lose_life.play();
             markers.splice(i, 1);
-            markers.push( new Marker(img, imgX, imgY));
+            markers.push(new Marker(img(random(1,3)), imgX, imgY));
             music.play();
         }
     }
