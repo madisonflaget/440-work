@@ -16,11 +16,17 @@ var imgY = 0;
 var memory = 0;
 var lives = 5;
 
-// preload marker image and sounds so they displays faster
+// preload marker images and sounds so they display faster
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
+    img = loadImage('assets/m2.png');
+    img = loadImage('assets/m10.png');
+    img = loadImage('assets/m98.png');
+
     soundFormats('mp3');
-    music = loadSound('assets/mario_music.mp3');
+    music = loadSound('assets/mario_music_small.mp3');
+    music = loadSound('assets/gameover.mp3');
+    music = loadSound('assets/lose_life.mp3');
 }
 
 function setup() {
