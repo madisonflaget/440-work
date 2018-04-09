@@ -19,14 +19,14 @@ var lives = 5;
 // preload marker images and sounds so they display faster
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
-    img = loadImage('assets/m2.png');
-    img = loadImage('assets/m10.png');
-    img = loadImage('assets/m98.png');
+    img1 = loadImage('assets/m2.png');
+    img2 = loadImage('assets/m10.png');
+    img3 = loadImage('assets/m98.png');
 
     soundFormats('mp3');
     music = loadSound('assets/mario_music_small.mp3');
-    music = loadSound('assets/gameover.mp3');
-    music = loadSound('assets/lose_life.mp3');
+    lose_life = loadSound('assets/lose_life.mp3');
+    gameover_sound = loadSound('assets/gameover.mp3');
 }
 
 function setup() {
@@ -142,14 +142,20 @@ function draw() {
         if (memory > 30){
             memory = 0;
             lives--;
+            music.pause();
+            lose_life.setVolume(1.0);
+            lose_life.play();
             markers.splice(i, 1);
             markers.push( new Marker(img, imgX, imgY));
+            music.play();
         }
     }
     // if I lose all my lives, then I get a Game Over screen and the music stops
     if (lives <= 0) {
         background(game_over);
         music.stop();
+        gameover_sound.setVolume(1.0);
+        gameover_sound.play();
     }
 }
 
