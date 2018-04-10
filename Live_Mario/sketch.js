@@ -7,21 +7,26 @@ var w = 640,
 var raster, param, pmat, resultMat, detector;
 
 // variables to move the marker image around
-var img;
 var move = 0;
 let markers = [];
 var imgY = 0;
 
 //create memory variable to keep track of how long a marker is obscurred. Create a starting number of lives from which memory will subtract later
 var memory = 0;
-var lives = 5;
+var lives = 3;
 
-// preload marker images and sounds so they display faster
+// create an array to store the names of the the 3 markers
+var marker_img1;
+var marker_img2;
+var marker_img3;
+var marker_img = [ marker_img1, marker_img2, marker_img3 ];
+
 function preload()  {
-    img = loadImage('assets/mark_smaller.png');
-    img1 = loadImage('assets/m2.png');
-    img2 = loadImage('assets/m10.png');
-    img3 = loadImage('assets/m98.png');
+
+    // preload marker images and sounds so they display faster
+    marker_img1 = loadImage('assets/m2.png');
+    marker_img2 = loadImage('assets/m10.png');
+    marker_img3 = loadImage('assets/m98.png');
 
     soundFormats('mp3');
     music = loadSound('assets/mario_music_small.mp3');
@@ -39,9 +44,9 @@ function setup() {
     music.play();
     // music.loop();
 
-    //load marker image into canvas
+    //load initial marker image into canvas
     imgX = windowWidth - 220;
-    markers.push( new Marker(img, imgX, imgY ));
+    markers.push( new Marker(marker_img1, imgX, imgY ) );
 
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
@@ -67,7 +72,7 @@ function draw() {
     // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
     select('#lives').elt.innerText = lives;
 
-    // added a background so that there is a blank canvas to draw on. Then marker image is drawn
+    // added a background so that there is a plain canvas to draw on. Then marker image is drawn
     background(bg);
 
     // print title into canvas
@@ -78,13 +83,17 @@ function draw() {
 
     //each frame, generate a random number in a range to be used for the y location of the image
     imgY = random(0, 400);
-    // draw and update markers
+
+    // select a random marker from the array to be used if a new marker is drawn
+    var mark = random(marker_img);
+
+    // draw and update markers if they hit the edge of the screen
     for( let i = markers.length-1; i >= 0; i-- ){
         markers[i].display();
         markers[i].move();
         if( markers[i].destroy() ){
             markers.splice(i, 1);
-            markers.push( new Marker(img, imgX, imgY ));
+            markers.push( new Marker(mark, imgX, imgY ));
         }
     }
 
@@ -146,10 +155,11 @@ function draw() {
             lose_life.setVolume(1.0);
             lose_life.play();
             markers.splice(i, 1);
-            markers.push(new Marker(img(random(1,3)), imgX, imgY));
+            markers.push(new Marker(mark, imgX, imgY));
             music.play();
         }
     }
+
     // if I lose all my lives, then I get a Game Over screen and the music stops
     if (lives <= 0) {
         background(game_over);
@@ -157,12 +167,4 @@ function draw() {
         gameover_sound.setVolume(1.0);
         gameover_sound.play();
     }
-}
-
-// if mouse is pressed in upper left portion of the canvas, then the sketch enters fullscreen mode
-function mousePressed() {
-  if (mouseX > 0 && mouseX < 100 && mouseY > 0 && mouseY < 100) {
-    var fs = fullscreen();
-    fullscreen(!fs);
-  }
 }
