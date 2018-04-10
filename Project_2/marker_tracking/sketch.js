@@ -16,17 +16,11 @@ var imgY = 0;
 var memory = 0;
 var lives = 5;
 
-// preload marker images and sounds so they display faster
+// preload marker image and sounds so they displays faster
 function preload()  {
     img = loadImage('assets/mark_smaller.png');
-    img1 = loadImage('assets/m2.png');
-    img2 = loadImage('assets/m10.png');
-    img3 = loadImage('assets/m98.png');
-
     soundFormats('mp3');
-    music = loadSound('assets/mario_music_small.mp3');
-    lose_life = loadSound('assets/lose_life.mp3');
-    gameover_sound = loadSound('assets/gameover.mp3');
+    music = loadSound('assets/mario_music.mp3');
 }
 
 function setup() {
@@ -90,7 +84,7 @@ function draw() {
 
     for (var i = 0; i < detected; i++) {
         // read data from the marker
-        //var id = detector.getIdMarkerData(i);
+        var id = detector.getIdMarkerData(i);
 
         // *** commented out this line to get rid of the annoying flashing ***
         // get the transformation for this marker
@@ -139,23 +133,17 @@ function draw() {
         memory = 0;
     } else {
         memory++
-        if (memory > 30){
+        if (memory > 25){
             memory = 0;
             lives--;
-            music.stop();
-            lose_life.setVolume(1.0);
-            lose_life.play();
             markers.splice(i, 1);
-            markers.push(new Marker(img(random(1,3)), imgX, imgY));
-            music.play();
+            markers.push( new Marker(img, imgX, imgY));
         }
     }
     // if I lose all my lives, then I get a Game Over screen and the music stops
     if (lives <= 0) {
         background(game_over);
         music.stop();
-        gameover_sound.setVolume(1.0);
-        gameover_sound.play();
     }
 }
 
