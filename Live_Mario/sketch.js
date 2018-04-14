@@ -19,7 +19,9 @@ var lives = 3;
 var marker_img1;
 var marker_img2;
 var marker_img3;
-var marker_img = [ marker_img1, marker_img2, marker_img3 ];
+var marker_img;
+
+var game_active = true;
 
 function preload()  {
 
@@ -27,6 +29,7 @@ function preload()  {
     marker_img1 = loadImage('assets/m2.png');
     marker_img2 = loadImage('assets/m10.png');
     marker_img3 = loadImage('assets/m98.png');
+    marker_img = [ marker_img1, marker_img2, marker_img3 ];
 
     soundFormats('mp3');
     music = loadSound('assets/mario_music_small.mp3');
@@ -72,96 +75,100 @@ function draw() {
     // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
     select('#lives').elt.innerText = lives;
 
-    // added a background so that there is a plain canvas to draw on. Then marker image is drawn
-    background(bg);
+    if(game_active){
 
-    // print title into canvas
-    textSize(32);
-    textAlign(CENTER);
-    text('Live Mario', 0, 0);
-    fill(0);
 
-    //each frame, generate a random number in a range to be used for the y location of the image
-    imgY = random(0, 400);
+        // added a background so that there is a plain canvas to draw on. Then marker image is drawn
+        background(bg);
 
-    // select a random marker from the array to be used if a new marker is drawn
-    var mark = random(marker_img);
+        // print title into canvas
+        textSize(32);
+        textAlign(CENTER);
+        text('Live Mario', 0, 0);
+        fill(0);
 
-    // draw and update markers if they hit the edge of the screen
-    for( let i = markers.length-1; i >= 0; i-- ){
-        markers[i].display();
-        markers[i].move();
-        if( markers[i].destroy() ){
-            markers.splice(i, 1);
-            markers.push( new Marker(mark, imgX, imgY ));
+        //each frame, generate a random number in a range to be used for the y location of the image
+        imgY = random(0, 400);
+
+        // draw and update markers if they hit the edge of the screen
+        for( let i = markers.length-1; i >= 0; i-- ){
+            markers[i].display();
+            markers[i].move();
+            if( markers[i].destroy() ){
+                markers.splice(i, 1);
+                markers.push( new Marker(random(marker_img), imgX, imgY ));
+            }
         }
-    }
 
-    for (var i = 0; i < detected; i++) {
-        // read data from the marker
-        //var id = detector.getIdMarkerData(i);
+        for (var i = 0; i < detected; i++) {
+            // read data from the marker
+            //var id = detector.getIdMarkerData(i);
 
-        // *** commented out this line to get rid of the annoying flashing ***
-        // get the transformation for this marker
-        // detector.getTransformMatrix(i, resultMat);
+            // *** commented out this line to get rid of the annoying flashing ***
+            // get the transformation for this marker
+            // detector.getTransformMatrix(i, resultMat);
 
-        // convert the transformation to account for our camera
-        var mat = resultMat;
-        var cm = mat4.create();
-        cm[0] = mat.m00, cm[1] = -mat.m10, cm[2] = mat.m20, cm[3] = 0;
-        cm[4] = mat.m01, cm[5] = -mat.m11, cm[6] = mat.m21, cm[7] = 0;
-        cm[8] = -mat.m02, cm[9] = mat.m12, cm[10] = -mat.m22, cm[11] = 0;
-        cm[12] = mat.m03, cm[13] = -mat.m13, cm[14] = mat.m23, cm[15] = 1;
-        mat4.multiply(pmat, cm, cm);
+            // convert the transformation to account for our camera
+            var mat = resultMat;
+            var cm = mat4.create
+            cm[0] = mat.m00, cm[1] = -mat.m10, cm[2] = mat.m20, cm[3] = 0;
+            cm[4] = mat.m01, cm[5] = -mat.m11, cm[6] = mat.m21, cm[7] = 0;
+            cm[8] = -mat.m02, cm[9] = mat.m12, cm[10] = -mat.m22, cm[11] = 0;
+            cm[12] = mat.m03, cm[13] = -mat.m13, cm[14] = mat.m23, cm[15] = 1;
+            mat4.multiply(pmat, cm, cm);
 
-        // define a set of 3d vertices
-        var q = 1;
-        var verts = [
-            vec4.create(-q, -q, 0, 1),
-            vec4.create(q, -q, 0, 1),
-            vec4.create(q, q, 0, 1),
-            vec4.create(-q, q, 0, 1),
-        //vec4.create(0, 0, -2*q, 1) // poke up
-        ];
+            // define a set of 3d vertices
+            var q = 1;
+            var verts = [
+                vec4.create(-q, -q, 0, 1),
+                vec4.create(q, -q, 0, 1),
+                vec4.create(q, q, 0, 1),
+                vec4.create(-q, q, 0, 1),
+            //vec4.create(0, 0, -2*q, 1) // poke up
+            ];
 
-        // convert that set of vertices from object space to screen space
-        var w2 = width / 2,
-            h2 = height / 2;
-        verts.forEach(function (v) {
-            mat4.multiplyVec4(cm, v);
-            v[0] = v[0] * w2 / v[3] + w2;
-            v[1] = -v[1] * h2 / v[3] + h2;
-        });
+            // convert that set of vertices from object space to screen space
+            var w2 = width / 2,
+                h2 = height / 2;
+            verts.forEach(function (v) {
+                mat4.multiplyVec4(cm, v);
+                v[0] = v[0] * w2 / v[3] + w2;
+                v[1] = -v[1] * h2 / v[3] + h2;
+            });
 
-        noStroke();
-        fill(0, millis() % 255);
-        beginShape();
-        verts.forEach(function (v) {
-            vertex(v[0], v[1]);
-        });
-        endShape();
-    }
+            noStroke();
+            fill(0, millis() % 255);
+            beginShape();
+            verts.forEach(function (v) {
+                vertex(v[0], v[1]);
+            });
+            endShape();
+        }
 
-    // if all existing markers are visble, reset memory to 0 (to clear anomalies)
-    // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
-    if (detected >= markers.length) {
-        memory = 0;
-    } else {
-        memory++
-        if (memory > 30){
+        // if all existing markers are visble, reset memory to 0 (to clear anomalies)
+        // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
+        if (detected >= markers.length) {
             memory = 0;
-            lives--;
-            music.stop();
-            lose_life.setVolume(1.0);
-            lose_life.play();
-            markers.splice(i, 1);
-            markers.push(new Marker(mark, imgX, imgY));
-            music.play();
+        } else {
+            memory++
+            if (memory > 30){
+                memory = 0;
+                lives--;
+                music.stop();
+                lose_life.setVolume(1.0);
+                lose_life.play();
+                markers.splice(i, 1);
+                setTimeout(function(){
+                    music.play();
+                    markers.push(new Marker(random(marker_img), imgX, imgY));
+
+                }, 4000);
+            }
         }
     }
-
     // if I lose all my lives, then I get a Game Over screen and the music stops
-    if (lives <= 0) {
+    if (lives <= 0 && game_active) {
+        game_active = false;
         background(game_over);
         music.stop();
         gameover_sound.setVolume(1.0);
