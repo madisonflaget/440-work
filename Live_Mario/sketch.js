@@ -38,14 +38,15 @@ function preload()  {
 }
 
 function setup() {
-    //load bg image
+    //load bg image and gameover image
     bg = loadImage("assets/mario_bg.png");
     game_over = loadImage("assets/game_over.jpg");
 
-    // set volume, specify that I want it to loop, then start playing music
-    music.setVolume(1.0);
-    music.play();
-    // music.loop();
+    // If game is active and running: set volume then start playing music
+    if (game_active) {
+        music.setVolume(1.0);
+        music.play();
+    }
 
     //load initial marker image into canvas
     imgX = windowWidth - 220;
@@ -67,25 +68,19 @@ function setup() {
 }
 
 function draw() {
-    image(capture, 0, 0, windowWidth - 30, windowHeight - 130);
-    canvas.changed = true;
-    var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
-    detected = detector.detectMarkerLite(raster, thresholdAmount);
-    select('#markersDetected').elt.innerText = detected;
-    // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
-    select('#lives').elt.innerText = lives;
 
-    if(game_active){
+    if (game_active) {
 
+        image(capture, 0, 0, windowWidth - 30, windowHeight - 130);
+        canvas.changed = true;
+        var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
+        detected = detector.detectMarkerLite(raster, thresholdAmount);
+        select('#markersDetected').elt.innerText = detected;
+        // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
+        select('#lives').elt.innerText = lives;
 
         // added a background so that there is a plain canvas to draw on. Then marker image is drawn
         background(bg);
-
-        // print title into canvas
-        textSize(32);
-        textAlign(CENTER);
-        text('Live Mario', 0, 0);
-        fill(0);
 
         //each frame, generate a random number in a range to be used for the y location of the image
         imgY = random(0, 400);
@@ -147,7 +142,7 @@ function draw() {
 
         // if all existing markers are visble, reset memory to 0 (to clear anomalies)
         // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
-        if (detected >= markers.length) {
+        if (detected >= markers.length && game_active) {
             memory = 0;
         } else {
             memory++
@@ -158,20 +153,24 @@ function draw() {
                 lose_life.setVolume(1.0);
                 lose_life.play();
                 markers.splice(i, 1);
-                setTimeout(function(){
+                if (game_active) {
+                    setTimeout(function(){
                     music.play();
                     markers.push(new Marker(random(marker_img), imgX, imgY));
-
-                }, 4000);
+                    }, 3500);
+                }
             }
         }
     }
+
     // if I lose all my lives, then I get a Game Over screen and the music stops
     if (lives <= 0 && game_active) {
         game_active = false;
         background(game_over);
         music.stop();
-        gameover_sound.setVolume(1.0);
-        gameover_sound.play();
+        setTimeout(function(){
+            gameover_sound.setVolume(1.0);
+            gameover_sound.play();
+        }, 3500);
     }
 }
