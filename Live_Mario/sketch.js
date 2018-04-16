@@ -146,7 +146,7 @@ function draw() {
             memory = 0;
         } else {
             memory++
-            if (memory > 30){
+            if (memory > 25){
                 memory = 0;
                 lives--;
                 music.stop();
