@@ -75,9 +75,6 @@ function draw() {
         canvas.changed = true;
         var thresholdAmount = 140; //select('#thresholdAmount').value() * 255 / 100;
         detected = detector.detectMarkerLite(raster, thresholdAmount);
-        select('#markersDetected').elt.innerText = detected;
-        // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
-        select('#lives').elt.innerText = lives;
 
         // added a background so that there is a plain canvas to draw on. Then marker image is drawn
         background(bg);
@@ -146,13 +143,23 @@ function draw() {
             memory = 0;
         } else {
             memory++
-            if (memory > 25){
+            if (memory > 30){
                 memory = 0;
                 lives--;
                 music.stop();
                 lose_life.setVolume(1.0);
                 lose_life.play();
                 markers.splice(i, 1);
+                // if I lose all my lives, then I get a Game Over screen and the music stops
+                if (lives <= 0 && game_active) {
+                    game_active = false;
+                    background(game_over);
+                    music.stop();
+                    setTimeout(function(){
+                        gameover_sound.setVolume(1.0);
+                        gameover_sound.play();
+                    }, 3500);
+                }
                 if (game_active) {
                     setTimeout(function(){
                     music.play();
@@ -161,16 +168,11 @@ function draw() {
                 }
             }
         }
-    }
+    } // <- end game active conditional
 
-    // if I lose all my lives, then I get a Game Over screen and the music stops
-    if (lives <= 0 && game_active) {
-        game_active = false;
-        background(game_over);
-        music.stop();
-        setTimeout(function(){
-            gameover_sound.setVolume(1.0);
-            gameover_sound.play();
-        }, 3500);
-    }
+    select('#markersDetected').elt.innerText = detected;
+    // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
+    select('#lives').elt.innerText = lives;
+
+
 }
