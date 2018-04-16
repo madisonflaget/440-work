@@ -32,7 +32,7 @@ function preload()  {
     marker_img = [ marker_img1, marker_img2, marker_img3 ];
 
     soundFormats('mp3');
-    music = loadSound('assets/mario_music_small.mp3');
+    music = loadSound('assets/mario_music.mp3');
     lose_life = loadSound('assets/lose_life.mp3');
     gameover_sound = loadSound('assets/gameover.mp3');
 }
@@ -142,7 +142,7 @@ function draw() {
 
         // if all existing markers are visble, reset memory to 0 (to clear anomalies)
         // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
-        if (detected >= markers.length && game_active) {
+        if (detected >= markers.length) {
             memory = 0;
         } else {
             memory++
