@@ -21,7 +21,12 @@ var marker_img2;
 var marker_img3;
 var marker_img;
 
-var game_active = true;
+var game_active = false;
+
+// create variables for the video
+var vid;
+var playing = false;
+var completion;
 
 function preload()  {
 
@@ -38,15 +43,22 @@ function preload()  {
 }
 
 function setup() {
+    // prep video for placement into the sketch
+
+
+
+    vid = createVideo('assets/mario_video.mp4');
+    vid.hide();
+
+
     //load bg image and gameover image
     bg = loadImage("assets/mario_bg.png");
     game_over = loadImage("assets/game_over.jpg");
 
     // If game is active and running: set volume then start playing music
-    if (game_active) {
-        music.setVolume(1.0);
-        music.play();
-    }
+    // music.setVolume(1.0);
+    // music.play();
+
 
     //load initial marker image into canvas
     imgX = windowWidth - 220;
@@ -67,7 +79,52 @@ function setup() {
     detector.setContinueMode(true);
 }
 
+function start_game() {
+    console.log("starting video");
+    vid.show();
+    var elem = document.querySelector('video');
+   if (elem.requestFullscreen) {
+       vid.requestFullscreen();
+   } else if (elem.mozRequestFullScreen) {
+       elem.mozRequestFullScreen();
+   } else if (elem.webkitRequestFullscreen) {
+       elem.webkitRequestFullscreen();
+   }
+   vid.play();
+
+   var startBtn = document.querySelector("#start_button");
+   startBtn.display = false;
+
+   elem.onended = function(event) {
+       console.log("end test 1");
+       var elem = document.querySelector('video');
+      if (elem.requestFullscreen) {
+          vid.exitFullscreen();
+      } else if (elem.mozRequestFullScreen) {
+          elem.mozExitFullScreen();
+      } else if (elem.webkitRequestFullscreen) {
+          elem.webkitExitFullscreen();
+      }
+      vid.hide();
+      startBtn.hidden = true;
+       startMario();
+   }
+}
+
+
+function startMario() {
+    console.log("end test 2");
+   // createDiv("<h1>Start the Game</h1>")
+   game_active = true;
+   music.setVolume(1.0);
+   music.play();
+
+}
+
 function draw() {
+
+    // background('gray');
+
 
     if (game_active) {
 
@@ -170,9 +227,8 @@ function draw() {
         }
     } // <- end game active conditional
 
-    select('#markersDetected').elt.innerText = detected;
+    // select('#markersDetected').elt.innerText = detected;
     // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
     select('#lives').elt.innerText = lives;
-
 
 }
