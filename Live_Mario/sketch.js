@@ -21,12 +21,11 @@ var marker_img2;
 var marker_img3;
 var marker_img;
 
+// create variable that will trigger the game and start it
 var game_active = false;
 
 // create variables for the video
 var vid;
-var playing = false;
-var completion;
 
 function preload()  {
 
@@ -36,6 +35,7 @@ function preload()  {
     marker_img3 = loadImage('assets/m98.png');
     marker_img = [ marker_img1, marker_img2, marker_img3 ];
 
+    // preload sounds for the sketch
     soundFormats('mp3');
     music = loadSound('assets/mario_music.mp3');
     lose_life = loadSound('assets/lose_life.mp3');
@@ -44,26 +44,19 @@ function preload()  {
 
 function setup() {
     // prep video for placement into the sketch
-
-
-
+    //*** Note that this is a local file path and the video file is NOT tracked in my Github repository because large files cause issues. Therefore, you will need to place the path to your own video here if you clone my repository***
     vid = createVideo('assets/mario_video.mp4');
     vid.hide();
-
 
     //load bg image and gameover image
     bg = loadImage("assets/mario_bg.png");
     game_over = loadImage("assets/game_over.jpg");
 
-    // If game is active and running: set volume then start playing music
-    // music.setVolume(1.0);
-    // music.play();
-
-
     //load initial marker image into canvas
     imgX = windowWidth - 220;
     markers.push( new Marker(marker_img1, imgX, imgY ) );
 
+    // Kyle McDonald's code that loads in the webcam image and all the marker tracking code
     pixelDensity(1); // this makes the internal p5 canvas smaller
     capture = createCapture(VIDEO);
     createCanvas(windowWidth - 30, windowHeight - 130);
@@ -79,6 +72,7 @@ function setup() {
     detector.setContinueMode(true);
 }
 
+// laods in and triggers the video in fullscreen mode
 function start_game() {
     console.log("starting video");
     vid.show();
@@ -92,11 +86,12 @@ function start_game() {
    }
    vid.play();
 
+   // creates the start button on the web page
    var startBtn = document.querySelector("#start_button");
    startBtn.display = false;
 
+   // when video ends, the Mario game will launch after a few second delay
    elem.onended = function(event) {
-       console.log("end test 1");
        var elem = document.querySelector('video');
       if (elem.requestFullscreen) {
           vid.exitFullscreen();
@@ -107,25 +102,21 @@ function start_game() {
       }
       vid.hide();
       startBtn.hidden = true;
-       startMario();
+      setTimeout(function(){
+         startMario();
+      }, 6000);
    }
 }
 
-
+// when called, this function triggers the game and background sound to start
 function startMario() {
-    console.log("end test 2");
-   // createDiv("<h1>Start the Game</h1>")
    game_active = true;
    music.setVolume(1.0);
    music.play();
-
 }
 
 function draw() {
-
-    // background('gray');
-
-
+    //run the code for the Mario game if game_active = true. When we reach Game Over, game-game_active will be set to false and remain that way
     if (game_active) {
 
         image(capture, 0, 0, windowWidth - 30, windowHeight - 130);
@@ -157,6 +148,7 @@ function draw() {
             // get the transformation for this marker
             // detector.getTransformMatrix(i, resultMat);
 
+            // ***More of Kyle McDonald's code. From what I can tell, this is tons of maths to compensate for the skewed angle of a webcam
             // convert the transformation to account for our camera
             var mat = resultMat;
             var cm = mat4.create
@@ -193,6 +185,7 @@ function draw() {
             });
             endShape();
         }
+        // *** END Kyle McDonald's confusing but important maths
 
         // if all existing markers are visble, reset memory to 0 (to clear anomalies)
         // If fewer than the number of existing markers  is visible: subtract 1 from lives, splice out the oldest marker, draw a new marker at the start point
@@ -230,5 +223,4 @@ function draw() {
     // select('#markersDetected').elt.innerText = detected;
     // new ID 'lives' to keep track of how many times a variable is obscurred ie I collides
     select('#lives').elt.innerText = lives;
-
 }
